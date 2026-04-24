@@ -50,7 +50,7 @@ function HomePage() {
       <section ref={heroRef} className="relative h-screen min-h-[700px] w-full overflow-hidden">
         <motion.div style={{ scale: heroScale }} className="absolute inset-0">
           <img
-            src={settings?.hero_image || heroImg}
+            src={settings?.hero_image && settings.hero_image.trim() !== "" ? settings.hero_image : heroImg}
             alt="Cinematic portrait by Nino Khikhidze"
             className="w-full h-full object-cover"
             width={1920}

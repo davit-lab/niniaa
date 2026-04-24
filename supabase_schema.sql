@@ -219,19 +219,57 @@ CREATE POLICY "Admin delete media" ON storage.objects FOR DELETE TO authenticate
 
 -- 14. ADMIN BOOTSTRAP HELP
 -- Your user ID: f4806403-6207-4c66-a8b5-101b9d739f00
--- Run this in Supabase SQL editor to become an admin:
--- INSERT INTO public.user_roles (user_id, role) 
--- VALUES ('f4806403-6207-4c66-a8b5-101b9d739f00', 'admin')
--- ON CONFLICT (user_id, role) DO NOTHING;
+-- Run this in Supabase SQL editor to ensure you are an admin and the settings table is correct:
 
--- Ensure site_settings exists and has a primary key and all necessary columns
+-- 1. Create Admin Role if not exists
+INSERT INTO public.user_roles (user_id, role) 
+VALUES ('f4806403-6207-4c66-a8b5-101b9d739f00', 'admin')
+ON CONFLICT (user_id, role) DO NOTHING;
+
+-- 2. Fix site_settings table structure
 DO $$ 
 BEGIN
+    -- Ensure table exists
+    CREATE TABLE IF NOT EXISTS public.site_settings (
+        id text PRIMARY KEY DEFAULT 'global',
+        hero_title_part1 text NOT NULL DEFAULT 'NINO',
+        hero_title_part2 text NOT NULL DEFAULT 'Khikhidze',
+        hero_image text,
+        hero_quote text,
+        contact_location text NOT NULL DEFAULT 'Tbilisi, Georgia',
+        contact_email text,
+        contact_phone text,
+        instagram text,
+        facebook text,
+        about_text text,
+        about_image text,
+        primary_color text NOT NULL DEFAULT '#E29E2E',
+        accent_color text NOT NULL DEFAULT '#E29E2E',
+        updated_at timestamptz NOT NULL DEFAULT NOW()
+    );
+
+    -- Ensure Primary Key exists (Explicitly)
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'site_settings_pkey') THEN
-        ALTER TABLE public.site_settings ADD PRIMARY KEY (id);
+        BEGIN
+            ALTER TABLE public.site_settings ADD PRIMARY KEY (id);
+        EXCEPTION WHEN OTHERS THEN
+            RAISE NOTICE 'Could not add PK, it might already exist with a different name';
+        END;
     END IF;
     
+    -- Ensure all columns exist
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='hero_image') THEN
         ALTER TABLE public.site_settings ADD COLUMN hero_image text;
     END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='primary_color') THEN
+        ALTER TABLE public.site_settings ADD COLUMN primary_color text DEFAULT '#E29E2E';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='accent_color') THEN
+        ALTER TABLE public.site_settings ADD COLUMN accent_color text DEFAULT '#E29E2E';
+    END IF;
+
+    -- Insert default row if empty
+    INSERT INTO public.site_settings (id) VALUES ('global') ON CONFLICT DO NOTHING;
 END $$;

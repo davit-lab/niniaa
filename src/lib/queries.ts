@@ -42,6 +42,7 @@ export interface Review {
 }
 
 export interface SiteSettings {
+  id?: string;
   hero_title_part1: string;
   hero_title_part2: string;
   hero_image?: string;
@@ -55,6 +56,7 @@ export interface SiteSettings {
   about_image?: string;
   primary_color?: string;
   accent_color?: string;
+  updated_at?: string;
 }
 
 export async function fetchProjects() {
@@ -114,12 +116,20 @@ export async function fetchReviews() {
 }
 
 export async function fetchSettings() {
-  const { data, error } = await supabase
-    .from('site_settings')
-    .select('*')
-    .limit(1)
-    .single();
-  
-  if (error) return null;
-  return data as SiteSettings;
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .limit(1)
+      .maybeSingle(); // maybeSingle is safer than single if table might be empty
+    
+    if (error) {
+      console.warn("Error fetching settings:", error.message);
+      return null;
+    }
+    return data as SiteSettings;
+  } catch (err) {
+    console.error("Critical error in fetchSettings:", err);
+    return null;
+  }
 }

@@ -39,7 +39,7 @@ function AboutPage() {
             className="lg:col-span-5 aspect-[4/5] rounded-3xl overflow-hidden bg-card"
           >
             <img
-              src={settings?.about_image || aboutImg}
+              src={settings?.about_image && settings.about_image.trim() !== "" ? settings.about_image : aboutImg}
               alt="Nino Khikhidze"
               className="w-full h-full object-cover grain-img"
               width={1280}
