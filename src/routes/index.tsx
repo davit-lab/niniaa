@@ -50,11 +50,17 @@ function HomePage() {
       <section ref={heroRef} className="relative h-screen min-h-[700px] w-full overflow-hidden">
         <motion.div style={{ scale: heroScale }} className="absolute inset-0">
           <img
-            src={heroImg}
+            src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=1920"
             alt="Cinematic portrait by Nino Khikhidze"
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (target.src !== heroImg) {
+                target.src = heroImg;
+              }
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/50" />
         </motion.div>

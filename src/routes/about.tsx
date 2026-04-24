@@ -39,11 +39,17 @@ function AboutPage() {
             className="lg:col-span-5 aspect-[4/5] rounded-3xl overflow-hidden bg-card"
           >
             <img
-              src={aboutImg}
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"
               alt="Nino Khikhidze"
               className="w-full h-full object-cover grain-img"
               width={1280}
               height={1600}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== aboutImg) {
+                  target.src = aboutImg;
+                }
+              }}
             />
           </motion.div>
 
