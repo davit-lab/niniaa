@@ -45,13 +45,28 @@ function AppearanceComponent() {
   async function handleSave() {
     setSaving(true);
     try {
-      const { error } = await supabase
+      // First check if a record exists
+      const { data: existing } = await supabase
         .from("site_settings")
-        .upsert({ 
-          id: "global", 
-          ...form,
-          updated_at: new Date().toISOString() 
-        });
+        .select("id")
+        .eq("id", "global")
+        .maybeSingle();
+
+      const { error } = existing 
+        ? await supabase
+            .from("site_settings")
+            .update({ 
+               ...form,
+               updated_at: new Date().toISOString() 
+            })
+            .eq("id", "global")
+        : await supabase
+            .from("site_settings")
+            .insert({ 
+               id: "global",
+               ...form,
+               updated_at: new Date().toISOString() 
+            });
 
       if (error) throw error;
       toast.success("ვიზუალი განახლდა");

@@ -49,15 +49,25 @@ function SettingsAdmin() {
 
   async function saveSection(updates: Partial<Settings>) {
     try {
+      const { data: existing } = await supabase
+        .from('site_settings')
+        .select('id')
+        .eq('id', 'global')
+        .maybeSingle();
+
       const payload = {
-        id: form.id || 'global',
         ...updates,
         updated_at: new Date().toISOString()
       };
       
-      const { error } = await supabase
-        .from("site_settings")
-        .upsert(payload);
+      const { error } = existing 
+        ? await supabase
+            .from('site_settings')
+            .update(payload)
+            .eq('id', 'global')
+        : await supabase
+            .from('site_settings')
+            .insert({ id: 'global', ...payload });
 
       if (error) throw error;
 

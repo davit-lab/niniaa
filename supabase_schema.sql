@@ -215,3 +215,8 @@ DROP POLICY IF EXISTS "Admin update media" ON storage.objects;
 CREATE POLICY "Admin update media" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'));
 DROP POLICY IF EXISTS "Admin delete media" ON storage.objects;
 CREATE POLICY "Admin delete media" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'));
+
+-- 14. ADMIN BOOTSTRAP HELP
+-- To make yourself an admin, run this in Supabase SQL editor:
+-- INSERT INTO public.user_roles (user_id, role) 
+-- VALUES ('YOUR_USER_ID_FROM_AUTH_USERS', 'admin');
