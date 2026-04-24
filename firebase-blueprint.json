@@ -1,0 +1,122 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "A photography project or collection",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "cover_image": { "type": "string" },
+        "gallery": { "type": "array", "items": { "type": "string" } },
+        "date_label": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "sort_order": { "type": "integer" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["slug", "title", "category", "cover_image"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "A photography service offered",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "image": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title"]
+    },
+    "Shot": {
+      "title": "Shot",
+      "description": "A single photography shot for the gallery",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "caption": { "type": "string" },
+        "sort_order": { "type": "integer" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["url"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "A client review or testimonial",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "text": { "type": "string" },
+        "image": { "type": "string" },
+        "rating": { "type": "number" },
+        "sort_order": { "type": "integer" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "text", "rating"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "A client booking request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "service": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "contacted", "confirmed", "done", "cancelled"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "status"]
+    },
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Global site settings and configuration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hero_title_part1": { "type": "string" },
+        "hero_title_part2": { "type": "string" },
+        "hero_quote": { "type": "string" },
+        "contact_location": { "type": "string" },
+        "contact_email": { "type": "string" },
+        "contact_phone": { "type": "string" },
+        "instagram": { "type": "string" },
+        "facebook": { "type": "string" },
+        "about_text": { "type": "string" },
+        "about_image": { "type": "string" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "A user with administrative privileges",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "projects": { "schema": "Project", "description": "Photography projects" },
+    "services": { "schema": "Service", "description": "Available photography services" },
+    "shots": { "schema": "Shot", "description": "Gallery shots" },
+    "reviews": { "schema": "Review", "description": "Client testimonials" },
+    "bookings": { "schema": "Booking", "description": "Client booking requests" },
+    "site_settings": { "schema": "SiteSettings", "description": "Global site configuration" },
+    "admins": { "schema": "Admin", "description": "Users with admin access" }
+  }
+}
