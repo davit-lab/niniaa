@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Field, inputCls, textareaCls } from "@/components/admin/Field";
 import { Plus, Pencil, Trash2, X, Save } from "lucide-react";
@@ -28,9 +27,13 @@ function ServicesAdmin() {
   const { data: services = [] } = useQuery({
     queryKey: ["admin-services"],
     queryFn: async () => {
-      const q = query(collection(db, "services"), orderBy("sort_order"));
-      const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() })) as Service[];
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      
+      if (error) throw error;
+      return data as Service[];
     },
   });
 
@@ -45,13 +48,15 @@ function ServicesAdmin() {
       tags: editing.tags ?? [],
       image: editing.image ?? null,
       sort_order: editing.sort_order ?? 0,
-      updated_at: serverTimestamp()
+      updated_at: new Date().toISOString()
     };
     try {
       if (isNew) {
-        await addDoc(collection(db, "services"), { ...payload, created_at: serverTimestamp() });
+        const { error } = await supabase.from("services").insert(payload);
+        if (error) throw error;
       } else {
-        await updateDoc(doc(db, "services", editing.id!), payload);
+        const { error } = await supabase.from("services").update(payload).eq("id", editing.id!);
+        if (error) throw error;
       }
       toast.success(isNew ? "დაემატა" : "განახლდა");
       setEditing(null);
@@ -63,13 +68,15 @@ function ServicesAdmin() {
   }
 
   async function remove(id: string) {
-    if (!confirm("წავშალო?")) return;
     try {
-      await deleteDoc(doc(db, "services", id));
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) throw error;
       qc.invalidateQueries({ queryKey: ["admin-services"] });
       qc.invalidateQueries({ queryKey: ["services"] });
+      toast.success("წაიშალა");
     } catch (e) {
-      toast.error((e as Error).message);
+      console.error("Delete error:", e);
+      toast.error("წაშლა ვერ მოხერხდა: " + (e as Error).message);
     }
   }
 

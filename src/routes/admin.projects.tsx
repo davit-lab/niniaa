@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { GalleryUpload } from "@/components/admin/GalleryUpload";
 import { Field, inputCls, textareaCls } from "@/components/admin/Field";
@@ -41,9 +40,13 @@ function ProjectsAdmin() {
   const { data: projects = [] } = useQuery({
     queryKey: ["admin-projects"],
     queryFn: async () => {
-      const q = query(collection(db, "projects"), orderBy("sort_order"));
-      const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() })) as Project[];
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      
+      if (error) throw error;
+      return data as Project[];
     },
   });
 
@@ -62,7 +65,7 @@ function ProjectsAdmin() {
       date_label: editing.date_label || null,
       featured: !!editing.featured,
       sort_order: editing.sort_order ?? 0,
-      updated_at: serverTimestamp()
+      updated_at: new Date().toISOString()
     };
     if (!payload.title || !payload.cover_image) {
       toast.error("სათაური და cover ფოტო აუცილებელია");
@@ -70,13 +73,19 @@ function ProjectsAdmin() {
     }
     try {
       if (isNew) {
-        await addDoc(collection(db, "projects"), {
-          ...payload,
-          created_at: serverTimestamp()
-        });
+        const { error } = await supabase
+          .from("projects")
+          .insert(payload);
+        
+        if (error) throw error;
         toast.success("შეიქმნა");
       } else {
-        await updateDoc(doc(db, "projects", editing.id!), payload);
+        const { error } = await supabase
+          .from("projects")
+          .update(payload)
+          .eq("id", editing.id!);
+        
+        if (error) throw error;
         toast.success("განახლდა");
       }
       setEditing(null);
@@ -88,14 +97,19 @@ function ProjectsAdmin() {
   }
 
   async function remove(id: string) {
-    if (!confirm("წავშალო ეს პროექტი?")) return;
     try {
-      await deleteDoc(doc(db, "projects", id));
+      const { error } = await supabase
+        .from("projects")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
       toast.success("წაშლილია");
       qc.invalidateQueries({ queryKey: ["admin-projects"] });
       qc.invalidateQueries({ queryKey: ["projects"] });
     } catch (error) {
-      toast.error((error as Error).message);
+      console.error("Delete error:", error);
+      toast.error("წაშლა ვერ მოხერხდა: " + (error as Error).message);
     }
   }
 

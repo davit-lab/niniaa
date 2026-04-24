@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { fetchShots } from "@/lib/firestore-queries";
+import { fetchShots } from "@/lib/queries";
 
 export const Route = createFileRoute("/shots")({
   head: () => ({

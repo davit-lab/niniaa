@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate, useLocation, Link, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { auth } from "@/lib/firebase";
-import { signOut } from "firebase/auth";
-import { LogOut, LayoutDashboard, Image, Briefcase, Mail, Settings as SettingsIcon, Sparkles, MessageSquareQuote } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { LogOut, LayoutDashboard, Image, Briefcase, Mail, Settings as SettingsIcon, Sparkles, MessageSquareQuote, Palette } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Nino Khikhidze" }, { name: "robots", content: "noindex" }] }),
@@ -37,13 +36,14 @@ function AdminLayout() {
     );
   }
 
-  const links: { to: "/admin" | "/admin/projects" | "/admin/services" | "/admin/shots" | "/admin/reviews" | "/admin/bookings" | "/admin/settings"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
+  const links: { to: "/admin" | "/admin/projects" | "/admin/services" | "/admin/shots" | "/admin/reviews" | "/admin/bookings" | "/admin/settings" | "/admin/appearance"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
     { to: "/admin", label: "მთავარი", icon: LayoutDashboard, exact: true },
     { to: "/admin/projects", label: "პროექტები", icon: Briefcase },
     { to: "/admin/services", label: "სერვისები", icon: Sparkles },
     { to: "/admin/shots", label: "კადრები", icon: Image },
     { to: "/admin/reviews", label: "მიმოხილვები", icon: MessageSquareQuote },
     { to: "/admin/bookings", label: "ჯავშნები", icon: Mail },
+    { to: "/admin/appearance", label: "ვიზუალი", icon: Palette },
     { to: "/admin/settings", label: "პარამეტრები", icon: SettingsIcon },
   ];
 
@@ -65,7 +65,7 @@ function AdminLayout() {
           </Link>
         ))}
         <button
-          onClick={async () => { await signOut(auth); navigate({ to: "/admin/login" }); }}
+          onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin/login" }); }}
           className="mt-auto flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-destructive transition-colors"
         >
           <LogOut size={16} /> გასვლა

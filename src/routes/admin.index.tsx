@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { db } from "@/lib/firebase";
-import { collection, getCountFromServer, query, where } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 import { Briefcase, Sparkles, Image, MessageSquareQuote, Mail, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
@@ -12,21 +11,32 @@ function Dashboard() {
   const { data: stats } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
+      const fetchCount = async (table: string, filter?: any) => {
+        let query = supabase.from(table).select("*", { count: "exact", head: true });
+        if (filter) {
+          query = query.eq(filter.key, filter.value);
+        }
+        const { count, error } = await query;
+        if (error) throw error;
+        return count ?? 0;
+      };
+
       const [p, s, sh, r, b, bn] = await Promise.all([
-        getCountFromServer(collection(db, "projects")),
-        getCountFromServer(collection(db, "services")),
-        getCountFromServer(collection(db, "shots")),
-        getCountFromServer(collection(db, "reviews")),
-        getCountFromServer(collection(db, "bookings")),
-        getCountFromServer(query(collection(db, "bookings"), where("status", "==", "new"))),
+        fetchCount("projects"),
+        fetchCount("services"),
+        fetchCount("shots"),
+        fetchCount("reviews"),
+        fetchCount("bookings"),
+        fetchCount("bookings", { key: "status", value: "new" }),
       ]);
+
       return {
-        projects: p.data().count, 
-        services: s.data().count, 
-        shots: sh.data().count,
-        reviews: r.data().count, 
-        bookings: b.data().count, 
-        newBookings: bn.data().count,
+        projects: p, 
+        services: s, 
+        shots: sh,
+        reviews: r, 
+        bookings: b, 
+        newBookings: bn,
       };
     },
   });

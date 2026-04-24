@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 
 import { SiteNavbar } from "@/components/SiteNavbar";
 import { SiteFooter } from "@/components/SiteFooter";
-import { fetchSettings } from "@/lib/firestore-queries";
+import { fetchSettings } from "@/lib/queries";
 
 function NotFoundComponent() {
   return (
@@ -59,9 +59,22 @@ function Layout() {
     staleTime: 60_000,
   });
 
+  const dynamicStyles = (
+    <style>
+      {`
+        :root {
+          ${settings?.primary_color ? `--primary: ${settings.primary_color} !important;` : ""}
+          ${settings?.accent_color ? `--accent: ${settings.accent_color} !important;` : ""}
+          ${settings?.primary_color ? `--ring: ${settings.primary_color} !important;` : ""}
+        }
+      `}
+    </style>
+  );
+
   if (isAdmin) {
     return (
       <div className="min-h-screen bg-background">
+        {dynamicStyles}
         <Outlet />
       </div>
     );
@@ -70,6 +83,7 @@ function Layout() {
   return (
     <div className="flex flex-col min-h-screen bg-background relative">
       <div className="noise" aria-hidden />
+      {dynamicStyles}
       <SiteNavbar />
       <main className="flex-1">
         <Outlet />

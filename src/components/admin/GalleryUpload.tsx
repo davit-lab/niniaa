@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "@/lib/supabase";
 import { Upload, X, Loader2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,21 +14,38 @@ export function GalleryUpload({ value, onChange, folder = "gallery" }: Props) {
 
   async function handleFiles(files: FileList) {
     setBusy(true);
+    const filesArray = Array.from(files).filter(f => f.type.startsWith("image/"));
+    
+    if (filesArray.length === 0) {
+      setBusy(false);
+      return;
+    }
+
     try {
-      const uploads: string[] = [];
-      for (const file of Array.from(files)) {
-        if (!file.type.startsWith("image/")) continue;
+      const uploadPromises = filesArray.map(async (file, index) => {
         const ext = file.name.split(".").pop() || "jpg";
-        const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-        const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        uploads.push(url);
-      }
-      onChange([...value, ...uploads]);
-      toast.success(`აიტვირთა ${uploads.length} ფოტო`);
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${index}.${ext}`;
+        const path = `${folder}/${fileName}`;
+        
+        const { error } = await supabase.storage
+          .from('media')
+          .upload(path, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('media')
+          .getPublicUrl(path);
+        
+        return publicUrl;
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      onChange([...value, ...urls]);
+      toast.success(`აიტვირთა ${urls.length} ფოტო`);
     } catch (err) {
-      toast.error((err as Error).message);
+      console.error("Gallery upload error:", err);
+      toast.error(`შეცდომა ატვირთვისას: ${(err as Error).message}`);
     } finally {
       setBusy(false);
     }
@@ -69,7 +85,7 @@ export function GalleryUpload({ value, onChange, folder = "gallery" }: Props) {
         ))}
         <label className="aspect-square rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary hover:bg-secondary/40 transition">
           {busy ? <Loader2 className="animate-spin text-primary" size={20} /> : <Upload size={18} className="text-muted-foreground" />}
-          <span className="text-[10px] text-muted-foreground">დამატე</span>
+          <span className="text-[10px] text-muted-foreground">{busy ? "იტვირთება..." : "დამატე"}</span>
           <input type="file" accept="image/*" multiple className="hidden" disabled={busy}
             onChange={(e) => e.target.files && handleFiles(e.target.files)} />
         </label>

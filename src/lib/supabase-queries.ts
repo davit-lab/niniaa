@@ -1,0 +1,146 @@
+import { supabase } from './supabase';
+
+export interface Project {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  description?: string;
+  cover_image: string;
+  gallery: string[];
+  date_label?: string;
+  featured: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  description?: string;
+  tags: string[];
+  image?: string;
+  sort_order: number;
+}
+
+export interface Shot {
+  id: string;
+  url: string;
+  caption?: string;
+  sort_order: number;
+}
+
+export interface Review {
+  id: string;
+  name: string;
+  role?: string;
+  text: string;
+  image?: string;
+  rating: number;
+  sort_order: number;
+}
+
+export interface SiteSettings {
+  id?: string;
+  hero_title_part1: string;
+  hero_title_part2: string;
+  hero_image?: string;
+  hero_quote?: string;
+  contact_location: string;
+  contact_email?: string;
+  contact_phone?: string;
+  instagram?: string;
+  facebook?: string;
+  about_text?: string;
+  about_image?: string;
+}
+
+export interface Booking {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  service: string;
+  date: string;
+  message?: string;
+  status: "new" | "replied" | "archived";
+  created_at: string;
+}
+
+export async function fetchProjects() {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  
+  if (error) throw error;
+  return data as Project[];
+}
+
+export async function fetchProjectBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+  
+  if (error) return null;
+  return data as Project;
+}
+
+export async function fetchServices() {
+  const { data, error } = await supabase
+    .from('services')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  
+  if (error) throw error;
+  return data as Service[];
+}
+
+export async function fetchShots(limitCount?: number) {
+  let query = supabase
+    .from('shots')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  
+  if (limitCount) {
+    query = query.limit(limitCount);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return data as Shot[];
+}
+
+export async function fetchReviews() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  
+  if (error) throw error;
+  return data as Review[];
+}
+
+export async function fetchSettings() {
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('*')
+    .limit(1)
+    .single();
+  
+  if (error) return null;
+  return data as SiteSettings;
+}
+
+export async function fetchBookings() {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data as Booking[];
+}

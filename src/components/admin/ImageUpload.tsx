@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "@/lib/supabase";
 import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,17 +20,29 @@ export function ImageUpload({ value, onChange, folder = "uploads", className = "
       toast.error("მხოლოდ ფოტო ფაილებია მისაღები");
       return;
     }
+
     setBusy(true);
+
     try {
       const ext = file.name.split(".").pop() || "jpg";
-      const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      onChange(url);
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const path = `${folder}/${fileName}`;
+      
+      const { data, error } = await supabase.storage
+        .from('media')
+        .upload(path, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(path);
+
+      onChange(publicUrl);
       toast.success("ფოტო აიტვირთა");
     } catch (err) {
-      toast.error((err as Error).message);
+      console.error("Upload error:", err);
+      toast.error(`შეცდომა: ${(err as Error).message}`);
     } finally {
       setBusy(false);
     }
@@ -54,7 +65,10 @@ export function ImageUpload({ value, onChange, folder = "uploads", className = "
         ) : (
           <label className="absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/60 transition">
             {busy ? (
-              <Loader2 className="animate-spin text-primary" size={28} />
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="animate-spin text-primary" size={28} />
+                <span className="text-[10px] font-mono">იტვირთება...</span>
+              </div>
             ) : (
               <>
                 <Upload size={24} className="text-muted-foreground" />

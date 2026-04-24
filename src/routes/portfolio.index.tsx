@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { fetchProjects } from "@/lib/firestore-queries";
+import { fetchProjects } from "@/lib/queries";
 
 export const Route = createFileRoute("/portfolio/")({
   head: () => ({

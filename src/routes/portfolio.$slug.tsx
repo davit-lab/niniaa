@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { fetchProjectBySlug } from "@/lib/firestore-queries";
+import { fetchProjectBySlug } from "@/lib/queries";
 
 export const Route = createFileRoute("/portfolio/$slug")({
   loader: async ({ params, context: { queryClient } }) => {

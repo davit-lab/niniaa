@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 import { Trash2, CheckCircle2, Circle, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +12,7 @@ type Booking = {
   service: string | null;
   message: string | null;
   status: "new" | "contacted" | "confirmed" | "done" | "cancelled";
-  created_at: any;
+  created_at: string;
 };
 
 export const Route = createFileRoute("/admin/bookings")({
@@ -25,15 +24,24 @@ function BookingsPage() {
   const { data: bookings = [] } = useQuery({
     queryKey: ["bookings"],
     queryFn: async () => {
-      const q = query(collection(db, "bookings"), orderBy("created_at", "desc"));
-      const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() })) as Booking[];
+      const { data, error } = await supabase
+        .from("bookings")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data as Booking[];
     },
   });
 
   async function setStatus(id: string, status: Booking["status"]) {
     try {
-      await updateDoc(doc(db, "bookings", id), { status, updated_at: serverTimestamp() });
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status })
+        .eq("id", id);
+      
+      if (error) throw error;
       qc.invalidateQueries({ queryKey: ["bookings"] });
     } catch (e) {
       toast.error((e as Error).message);
@@ -41,13 +49,18 @@ function BookingsPage() {
   }
 
   async function remove(id: string) {
-    if (!confirm("წავშალო?")) return;
     try {
-      await deleteDoc(doc(db, "bookings", id));
+      const { error } = await supabase
+        .from("bookings")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
       qc.invalidateQueries({ queryKey: ["bookings"] });
       toast.success("წაშლილია");
     } catch (e) {
-      toast.error((e as Error).message);
+      console.error("Delete error:", e);
+      toast.error("წაშლა ვერ მოხერხდა: " + (e as Error).message);
     }
   }
 
@@ -75,7 +88,7 @@ function BookingsPage() {
               </div>
               <div className="flex flex-col items-end gap-2 flex-shrink-0">
                 <span className="text-[10px] font-mono uppercase text-muted-foreground">
-                  {b.created_at?.toDate ? b.created_at.toDate().toLocaleDateString() : new Date(b.created_at).toLocaleDateString()} {b.created_at?.toDate ? b.created_at.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : new Date(b.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  {new Date(b.created_at).toLocaleDateString()} {new Date(b.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </span>
                 <div className="flex gap-1">
                   <button

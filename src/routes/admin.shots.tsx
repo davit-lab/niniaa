@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Plus, Trash2, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -18,9 +17,13 @@ function ShotsAdmin() {
   const { data: shots = [] } = useQuery({
     queryKey: ["admin-shots"],
     queryFn: async () => {
-      const q = query(collection(db, "shots"), orderBy("sort_order"));
-      const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() })) as Shot[];
+      const { data, error } = await supabase
+        .from("shots")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      
+      if (error) throw error;
+      return data as Shot[];
     },
   });
 
@@ -29,12 +32,14 @@ function ShotsAdmin() {
   async function add() {
     if (!draft.url) return toast.error("ჯერ ატვირთე ფოტო");
     try {
-      await addDoc(collection(db, "shots"), {
+      const { error } = await supabase.from("shots").insert({
         url: draft.url,
         caption: draft.caption || null,
-        sort_order: shots.length,
-        created_at: serverTimestamp()
+        sort_order: shots.length
       });
+      
+      if (error) throw error;
+
       setDraft({ url: "", caption: "" });
       qc.invalidateQueries({ queryKey: ["admin-shots"] });
       qc.invalidateQueries({ queryKey: ["shots"] });
@@ -45,19 +50,26 @@ function ShotsAdmin() {
   }
 
   async function remove(id: string) {
-    if (!confirm("წავშალო?")) return;
     try {
-      await deleteDoc(doc(db, "shots", id));
+      const { error } = await supabase.from("shots").delete().eq("id", id);
+      if (error) throw error;
       qc.invalidateQueries({ queryKey: ["admin-shots"] });
       qc.invalidateQueries({ queryKey: ["shots"] });
+      toast.success("წაიშალა");
     } catch (e) {
-      toast.error((e as Error).message);
+      console.error("Delete error:", e);
+      toast.error("წაშლა ვერ მოხერხდა: " + (e as Error).message);
     }
   }
 
   async function updateCaption(id: string, caption: string) {
     try {
-      await updateDoc(doc(db, "shots", id), { caption, updated_at: serverTimestamp() });
+      const { error } = await supabase.from("shots").update({ 
+        caption, 
+        updated_at: new Date().toISOString() 
+      }).eq("id", id);
+
+      if (error) throw error;
       qc.invalidateQueries({ queryKey: ["admin-shots"] });
     } catch (e) {
       toast.error((e as Error).message);
@@ -70,10 +82,13 @@ function ShotsAdmin() {
     if (ni < 0 || ni >= shots.length) return;
     const a = shots[idx], b = shots[ni];
     try {
-      await Promise.all([
-        updateDoc(doc(db, "shots", a.id), { sort_order: b.sort_order }),
-        updateDoc(doc(db, "shots", b.id), { sort_order: a.sort_order }),
+      const { error } = await supabase.from("shots").upsert([
+        { id: a.id, url: a.url, sort_order: b.sort_order, updated_at: new Date().toISOString() },
+        { id: b.id, url: b.url, sort_order: a.sort_order, updated_at: new Date().toISOString() }
       ]);
+      
+      if (error) throw error;
+
       qc.invalidateQueries({ queryKey: ["admin-shots"] });
       qc.invalidateQueries({ queryKey: ["shots"] });
     } catch (e) {

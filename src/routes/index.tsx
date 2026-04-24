@@ -9,7 +9,7 @@ import {
   fetchShots,
   fetchReviews,
   fetchSettings,
-} from "@/lib/firestore-queries";
+} from "@/lib/queries";
 import heroImg from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -50,7 +50,7 @@ function HomePage() {
       <section ref={heroRef} className="relative h-screen min-h-[700px] w-full overflow-hidden">
         <motion.div style={{ scale: heroScale }} className="absolute inset-0">
           <img
-            src={heroImg}
+            src={settings?.hero_image || heroImg}
             alt="Cinematic portrait by Nino Khikhidze"
             className="w-full h-full object-cover"
             width={1920}

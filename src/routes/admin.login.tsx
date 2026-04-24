@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { auth } from "@/lib/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { LogIn, Mail, Lock } from "lucide-react";
 
@@ -20,11 +19,17 @@ function LoginPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
       toast.success("მოგესალმებით!");
       navigate({ to: "/admin" });
-    } catch (err) {
-      toast.error("ავტორიზაცია ვერ მოხერხდა. შეამოწმეთ მონაცემები.");
+    } catch (err: any) {
+      toast.error(err.message || "ავტორიზაცია ვერ მოხერხდა. შეამოწმეთ მონაცემები.");
       console.error(err);
     } finally {
       setBusy(false);
@@ -86,7 +91,7 @@ function LoginPage() {
         </form>
         
         <p className="text-[10px] text-muted-foreground px-4 uppercase tracking-widest">
-          Secured by Firebase Auth
+          Secured by Supabase
         </p>
       </div>
     </div>

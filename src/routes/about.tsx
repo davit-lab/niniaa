@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { fetchSettings, fetchServices } from "@/lib/firestore-queries";
+import { fetchSettings, fetchServices } from "@/lib/queries";
 import aboutImg from "@/assets/about.jpg";
 
 export const Route = createFileRoute("/about")({

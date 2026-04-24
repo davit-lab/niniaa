@@ -3,9 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { fetchSettings, fetchServices } from "@/lib/firestore-queries";
-import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { fetchSettings, fetchServices } from "@/lib/queries";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
@@ -35,18 +34,21 @@ function ContactPage() {
     }
     setSending(true);
     try {
-      await addDoc(collection(db, "bookings"), {
+      const { error } = await supabase.from("bookings").insert({
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim() || null,
         service: form.service.trim() || null,
         message: form.message.trim() || null,
-        status: 'new',
-        created_at: serverTimestamp()
+        status: 'new'
       });
+
+      if (error) throw error;
+
       toast.success("მადლობა! მალე დაგიკავშირდებით.");
       setForm({ name: "", email: "", phone: "", service: "", message: "" });
     } catch (error) {
+      console.error("Booking error:", error);
       toast.error("შეტყობინების გაგზავნა ვერ მოხერხდა. სცადეთ თავიდან.");
     } finally {
       setSending(false);

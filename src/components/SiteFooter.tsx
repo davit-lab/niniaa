@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, ArrowUpRight } from "lucide-react";
-import type { SiteSettings } from "@/lib/firestore-queries";
+import type { SiteSettings } from "@/lib/queries";
 
 export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
   const year = new Date().getFullYear();
