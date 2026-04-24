@@ -117,15 +117,24 @@ export async function fetchReviews() {
 
 export async function fetchSettings() {
   try {
+    // Try to fetch all, if any column is missing, this might fail with schema error
     const { data, error } = await supabase
       .from('site_settings')
-      .select('*')
+      .select('id, hero_title_part1, hero_title_part2, hero_quote, contact_location, contact_email, contact_phone, instagram, facebook, about_text, primary_color, accent_color, updated_at')
       .limit(1)
-      .maybeSingle(); // maybeSingle is safer than single if table might be empty
+      .maybeSingle(); 
     
     if (error) {
-      console.warn("Error fetching settings:", error.message);
-      return null;
+      console.warn("Error fetching settings (likely missing columns):", error.message);
+      // Try again with even more basic select if first one fails
+      const { data: basicData, error: basicError } = await supabase
+        .from('site_settings')
+        .select('id, hero_title_part1, hero_title_part2')
+        .limit(1)
+        .maybeSingle();
+      
+      if (basicError) return null;
+      return basicData as SiteSettings;
     }
     return data as SiteSettings;
   } catch (err) {
