@@ -217,6 +217,16 @@ DROP POLICY IF EXISTS "Admin delete media" ON storage.objects;
 CREATE POLICY "Admin delete media" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'));
 
 -- 14. ADMIN BOOTSTRAP HELP
--- To make yourself an admin, run this in Supabase SQL editor:
+-- Your user ID: f4806403-6207-4c66-a8b5-101b9d739f00
+-- Run this in Supabase SQL editor to become an admin:
 -- INSERT INTO public.user_roles (user_id, role) 
--- VALUES ('YOUR_USER_ID_FROM_AUTH_USERS', 'admin');
+-- VALUES ('f4806403-6207-4c66-a8b5-101b9d739f00', 'admin')
+-- ON CONFLICT (user_id, role) DO NOTHING;
+
+-- Ensure site_settings exists and has a primary key
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'site_settings_pkey') THEN
+        ALTER TABLE public.site_settings ADD PRIMARY KEY (id);
+    END IF;
+END $$;
