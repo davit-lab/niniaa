@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
   id text PRIMARY KEY DEFAULT 'global',
   hero_title_part1 text NOT NULL DEFAULT 'NINO',
   hero_title_part2 text NOT NULL DEFAULT 'Khikhidze',
+  hero_image text,
   hero_quote text,
   contact_location text NOT NULL DEFAULT 'Tbilisi, Georgia',
   contact_email text,
@@ -223,10 +224,14 @@ CREATE POLICY "Admin delete media" ON storage.objects FOR DELETE TO authenticate
 -- VALUES ('f4806403-6207-4c66-a8b5-101b9d739f00', 'admin')
 -- ON CONFLICT (user_id, role) DO NOTHING;
 
--- Ensure site_settings exists and has a primary key
+-- Ensure site_settings exists and has a primary key and all necessary columns
 DO $$ 
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'site_settings_pkey') THEN
         ALTER TABLE public.site_settings ADD PRIMARY KEY (id);
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='site_settings' AND column_name='hero_image') THEN
+        ALTER TABLE public.site_settings ADD COLUMN hero_image text;
     END IF;
 END $$;

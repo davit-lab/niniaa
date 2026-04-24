@@ -44,6 +44,12 @@ function AboutPage() {
               className="w-full h-full object-cover grain-img"
               width={1280}
               height={1600}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== aboutImg) {
+                  target.src = aboutImg;
+                }
+              }}
             />
           </motion.div>
 
