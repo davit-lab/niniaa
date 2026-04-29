@@ -91,6 +91,17 @@ export async function fetchServices() {
   return data as Service[];
 }
 
+export async function fetchServiceById(id: string) {
+  const { data, error } = await supabase
+    .from('services')
+    .select('*')
+    .eq('id', id)
+    .single();
+  
+  if (error) return null;
+  return data as Service;
+}
+
 export async function fetchShots(limitCount?: number) {
   let query = supabase
     .from('shots')

@@ -6,6 +6,7 @@ import { Menu, X, Camera } from "lucide-react";
 const links = [
   { to: "/", label: "მთავარი" },
   { to: "/portfolio", label: "პორტფოლიო" },
+  { to: "/services", label: "სერვისები" },
   { to: "/about", label: "ჩემ შესახებ" },
   { to: "/shots", label: "არქივი" },
   { to: "/contact", label: "კონტაქტი" },

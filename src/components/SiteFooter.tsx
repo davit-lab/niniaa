@@ -31,6 +31,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
               <ul className="mt-6 space-y-3 text-sm font-medium">
                 {[
                   { to: "/portfolio", l: "პორტფოლიო" },
+                  { to: "/services", l: "სერვისები" },
                   { to: "/about", l: "ჩემ შესახებ" },
                   { to: "/shots", l: "არქივი" },
                   { to: "/contact", l: "კონტაქტი" },

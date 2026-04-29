@@ -257,7 +257,11 @@ function HomePage() {
                 className="group flex items-center gap-6 py-8 border-b border-border hover:bg-secondary/30 transition-colors px-2 md:px-6"
               >
                 <span className="font-mono text-xs text-primary font-bold w-10 shrink-0">[0{i + 1}]</span>
-                <div className="flex-1 flex items-center justify-between gap-6">
+                <Link
+                  to="/services/$id"
+                  params={{ id: s.id }}
+                  className="flex-1 flex items-center justify-between gap-6"
+                >
                   <h3 className="text-2xl md:text-5xl font-display font-bold uppercase tracking-tight transition-all group-hover:text-primary group-hover:italic group-hover:accent-font group-hover:font-normal">
                     {s.title}
                   </h3>
@@ -271,10 +275,14 @@ function HomePage() {
                       </span>
                     ))}
                   </div>
-                </div>
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-border flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-smooth">
+                </Link>
+                <Link
+                  to="/services/$id"
+                  params={{ id: s.id }}
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-border flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-smooth"
+                >
                   <ArrowUpRight size={18} />
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>
