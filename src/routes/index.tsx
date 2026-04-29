@@ -15,13 +15,13 @@ import heroImg from "@/assets/hero.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Nino Khikhidze — Independent Photography Studio" },
+      { title: "Nino Khikhadze — Independent Photography Studio" },
       {
         name: "description",
         content:
-          "Editorial, portrait, family, brand & event photography from Tbilisi. Cinematic visuals by Nino Khikhidze.",
+          "Editorial, portrait, family, brand & event photography from Tbilisi. Cinematic visuals by Nino Khikhadze.",
       },
-      { property: "og:title", content: "Nino Khikhidze — Independent Photography Studio" },
+      { property: "og:title", content: "Nino Khikhadze — Independent Photography Studio" },
       {
         property: "og:description",
         content: "Cinematic editorial photography from Tbilisi.",
@@ -50,8 +50,8 @@ function HomePage() {
       <section ref={heroRef} className="relative h-screen min-h-[700px] w-full overflow-hidden">
         <motion.div style={{ scale: heroScale }} className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=1920"
-            alt="Cinematic portrait by Nino Khikhidze"
+            src={settings?.hero_image && settings.hero_image.trim() !== "" ? settings.hero_image : heroImg}
+            alt="Cinematic portrait by Nino Khikhadze"
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
@@ -94,7 +94,7 @@ function HomePage() {
               transition={{ delay: 0.85, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-[18vw] lg:text-[14vw] accent-font italic lowercase leading-[0.78] tracking-[-0.04em] text-primary md:-mt-10 self-end pr-[2vw]"
             >
-              {settings?.hero_title_part2 || "Khikhidze"}
+              {settings?.hero_title_part2 || "Khikhadze"}
             </motion.h1>
           </div>
 
@@ -286,7 +286,7 @@ function HomePage() {
         <div className="flex marquee-track gap-16 whitespace-nowrap items-center">
           {[...Array(2)].flatMap((_, k) =>
             [
-              "Nino Khikhidze",
+              "Nino Khikhadze",
               "Editorial",
               "Portrait",
               "Brand",

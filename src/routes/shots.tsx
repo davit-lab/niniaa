@@ -6,9 +6,9 @@ import { fetchShots } from "@/lib/queries";
 export const Route = createFileRoute("/shots")({
   head: () => ({
     meta: [
-      { title: "Archive — Nino Khikhidze" },
-      { name: "description", content: "Full photography archive — selected shots by Nino Khikhidze." },
-      { property: "og:title", content: "Archive — Nino Khikhidze" },
+      { title: "Archive — Nino Khikhadze" },
+      { name: "description", content: "Full photography archive — selected shots by Nino Khikhadze." },
+      { property: "og:title", content: "Archive — Nino Khikhadze" },
       { property: "og:description", content: "Full photography archive." },
     ],
   }),

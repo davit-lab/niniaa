@@ -10,9 +10,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Nino Khikhidze" },
-      { name: "description", content: "Book a session or get in touch with Nino Khikhidze." },
-      { property: "og:title", content: "Contact — Nino Khikhidze" },
+      { title: "Contact — Nino Khikhadze" },
+      { name: "description", content: "Book a session or get in touch with Nino Khikhadze." },
+      { property: "og:title", content: "Contact — Nino Khikhadze" },
       { property: "og:description", content: "Book a session or get in touch." },
     ],
   }),
@@ -123,7 +123,7 @@ function ContactPage() {
                 <select
                   value={form.service}
                   onChange={(e) => setForm((f) => ({ ...f, service: e.target.value }))}
-                  className="bg-background border border-border rounded-xl px-4 py-3 text-base focus:border-primary outline-none"
+                  className="bg-background border border-border rounded-xl px-4 py-3 text-base text-foreground focus:border-primary outline-none"
                 >
                   <option value="">აირჩიეთ...</option>
                   {services.map((s) => (
@@ -139,7 +139,7 @@ function ContactPage() {
                 value={form.message}
                 onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                 rows={6}
-                className="bg-background border border-border rounded-xl px-4 py-3 text-base focus:border-primary outline-none resize-none"
+                className="bg-background border border-border rounded-xl px-4 py-3 text-base text-foreground focus:border-primary outline-none resize-none"
                 placeholder="მოგვიყევით თქვენი იდეის შესახებ..."
               />
             </div>
@@ -170,7 +170,7 @@ function Field({
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-background border border-border rounded-xl px-4 py-3 text-base focus:border-primary outline-none"
+        className="bg-background border border-border rounded-xl px-4 py-3 text-base text-foreground focus:border-primary outline-none"
       />
     </div>
   );

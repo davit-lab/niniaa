@@ -19,6 +19,7 @@ function AppearanceComponent() {
   const [form, setForm] = useState({
     primary_color: "#E29E2E",
     accent_color: "#E29E2E",
+    background_color: "#0A0A0A",
   });
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function AppearanceComponent() {
         setForm({
           primary_color: data.primary_color || "#E29E2E",
           accent_color: data.accent_color || "#E29E2E",
+          background_color: data.background_color || "#0A0A0A",
         });
       }
     } catch (e) {
@@ -82,6 +84,7 @@ function AppearanceComponent() {
     setForm({
       primary_color: "#E29E2E",
       accent_color: "#E29E2E",
+      background_color: "#0A0A0A",
     });
   }
 
@@ -138,6 +141,25 @@ function AppearanceComponent() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">გამოიყენება დამატებითი ვიზუალური ელემენტებისთვის.</p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-medium">უკანა ფონი (Background)</label>
+              <div className="flex gap-4 items-center">
+                <input 
+                  type="color" 
+                  className="w-16 h-16 rounded-md border border-border bg-transparent cursor-pointer overflow-hidden p-0"
+                  value={form.background_color}
+                  onChange={(e) => setForm({ ...form, background_color: e.target.value })}
+                />
+                <input 
+                  type="text" 
+                  className="flex-1 h-12 bg-background border border-border rounded-md px-4 font-mono text-sm"
+                  value={form.background_color}
+                  onChange={(e) => setForm({ ...form, background_color: e.target.value })}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">საიტის ძირითადი უკანა ფონი.</p>
             </div>
           </div>
 

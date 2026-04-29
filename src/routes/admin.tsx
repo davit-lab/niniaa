@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { LogOut, LayoutDashboard, Image, Briefcase, Mail, Settings as SettingsIcon, Sparkles, MessageSquareQuote, Palette } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — Nino Khikhidze" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Admin — Nino Khikhadze" }, { name: "robots", content: "noindex" }] }),
   component: AdminLayout,
 });
 

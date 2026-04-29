@@ -13,6 +13,6 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 export const inputCls =
-  "w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition";
+  "w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary transition";
 
 export const textareaCls = inputCls + " min-h-[100px] resize-y";

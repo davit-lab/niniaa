@@ -7,9 +7,9 @@ import { fetchProjects } from "@/lib/queries";
 export const Route = createFileRoute("/portfolio/")({
   head: () => ({
     meta: [
-      { title: "Portfolio — Nino Khikhidze" },
-      { name: "description", content: "Selected photography projects by Nino Khikhidze." },
-      { property: "og:title", content: "Portfolio — Nino Khikhidze" },
+      { title: "Portfolio — Nino Khikhadze" },
+      { name: "description", content: "Selected photography projects by Nino Khikhadze." },
+      { property: "og:title", content: "Portfolio — Nino Khikhadze" },
       { property: "og:description", content: "Selected photography projects." },
     ],
   }),

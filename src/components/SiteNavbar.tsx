@@ -47,7 +47,7 @@ export function SiteNavbar() {
               <Camera size={16} strokeWidth={2.4} />
             </div>
             <span className="font-display font-bold tracking-tight text-base uppercase">
-              Nino<span className="accent-font italic font-normal text-primary lowercase ml-1">khikhidze</span>
+              Nino<span className="accent-font italic font-normal text-primary lowercase ml-1">khikhadze</span>
             </span>
           </Link>
 

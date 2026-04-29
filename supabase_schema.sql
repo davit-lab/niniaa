@@ -109,7 +109,7 @@ ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFA
 CREATE TABLE IF NOT EXISTS public.site_settings (
   id text PRIMARY KEY DEFAULT 'global',
   hero_title_part1 text NOT NULL DEFAULT 'NINO',
-  hero_title_part2 text NOT NULL DEFAULT 'Khikhidze',
+  hero_title_part2 text NOT NULL DEFAULT 'Khikhadze',
   hero_image text,
   hero_quote text,
   contact_location text NOT NULL DEFAULT 'Tbilisi, Georgia',
@@ -233,7 +233,7 @@ BEGIN
     CREATE TABLE IF NOT EXISTS public.site_settings (
         id text PRIMARY KEY DEFAULT 'global',
         hero_title_part1 text NOT NULL DEFAULT 'NINO',
-        hero_title_part2 text NOT NULL DEFAULT 'Khikhidze',
+        hero_title_part2 text NOT NULL DEFAULT 'Khikhadze',
         hero_image text,
         hero_quote text,
         contact_location text NOT NULL DEFAULT 'Tbilisi, Georgia',

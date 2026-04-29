@@ -56,6 +56,7 @@ export interface SiteSettings {
   about_image?: string;
   primary_color?: string;
   accent_color?: string;
+  background_color?: string;
   updated_at?: string;
 }
 
@@ -120,7 +121,7 @@ export async function fetchSettings() {
     // Try to fetch all, if any column is missing, this might fail with schema error
     const { data, error } = await supabase
       .from('site_settings')
-      .select('id, hero_title_part1, hero_title_part2, hero_quote, contact_location, contact_email, contact_phone, instagram, facebook, about_text, primary_color, accent_color, updated_at')
+      .select('id, hero_title_part1, hero_title_part2, hero_image, hero_quote, contact_location, contact_email, contact_phone, instagram, facebook, about_text, about_image, primary_color, accent_color, background_color, updated_at')
       .limit(1)
       .maybeSingle(); 
     
@@ -129,7 +130,7 @@ export async function fetchSettings() {
       // Try again with even more basic select if first one fails
       const { data: basicData, error: basicError } = await supabase
         .from('site_settings')
-        .select('id, hero_title_part1, hero_title_part2')
+        .select('id, hero_title_part1, hero_title_part2, hero_image, about_image')
         .limit(1)
         .maybeSingle();
       

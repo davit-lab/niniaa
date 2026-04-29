@@ -69,7 +69,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings | null }) {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-10 border-t border-border-subtle text-xs text-foreground/40 font-mono uppercase tracking-wider">
-          <span>© {year} Nino Khikhidze — ყველა უფლება დაცულია.</span>
+          <span>© {year} Nino Khikhadze — ყველა უფლება დაცულია.</span>
           <span>დამოუკიდებელი ფოტო-სტუდია / EST. 2024</span>
         </div>
       </div>

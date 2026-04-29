@@ -109,7 +109,7 @@ create policy "bookings_admin_delete" on public.bookings for delete to authentic
 create table public.site_settings (
   id text primary key default 'global',
   hero_title_part1 text not null default 'NINO',
-  hero_title_part2 text not null default 'Khikhidze',
+  hero_title_part2 text not null default 'Khikhadze',
   hero_quote text,
   contact_location text not null default 'Tbilisi, Georgia',
   contact_email text,
@@ -130,8 +130,8 @@ insert into public.site_settings (id, hero_quote, contact_email, contact_phone, 
 values (
   'global',
   'ფოტოგრაფია ჩემთვის მხოლოდ კადრი არაა, ეს არის წამიერი ემოცია, რომელიც სამუდამოდ რჩება.',
-  'hello@ninokhikhidze.com',
+  'hello@ninokhikhadze.com',
   '+995 555 12 34 56',
-  'https://instagram.com/ninokhikhidze',
-  'ნინო ხიხიძე — დამოუკიდებელი ფოტოგრაფი თბილისიდან. 2024 წლიდან ვქმნი ვიზუალურ ისტორიებს, რომლებიც წამიერ ემოციას მარადიულ კადრად აქცევს.'
+  'https://instagram.com/ninokhikhadze',
+  'ნინო ხიხაძე — დამოუკიდებელი ფოტოგრაფი თბილისიდან. 2024 წლიდან ვქმნი ვიზუალურ ისტორიებს, რომლებიც წამიერ ემოციას მარადიულ კადრად აქცევს.'
 );

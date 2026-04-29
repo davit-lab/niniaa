@@ -65,6 +65,7 @@ function Layout() {
         :root {
           ${settings?.primary_color ? `--primary: ${settings.primary_color} !important;` : ""}
           ${settings?.accent_color ? `--accent: ${settings.accent_color} !important;` : ""}
+          ${settings?.background_color ? `--background: ${settings.background_color} !important;` : ""}
           ${settings?.primary_color ? `--ring: ${settings.primary_color} !important;` : ""}
         }
       `}

@@ -7,9 +7,9 @@ import aboutImg from "@/assets/about.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Nino Khikhidze" },
-      { name: "description", content: "About Nino Khikhidze, independent photographer based in Tbilisi." },
-      { property: "og:title", content: "About — Nino Khikhidze" },
+      { title: "About — Nino Khikhadze" },
+      { name: "description", content: "About Nino Khikhadze, independent photographer based in Tbilisi." },
+      { property: "og:title", content: "About — Nino Khikhadze" },
       { property: "og:description", content: "About the photographer behind the lens." },
     ],
   }),
@@ -39,8 +39,8 @@ function AboutPage() {
             className="lg:col-span-5 aspect-[4/5] rounded-3xl overflow-hidden bg-card"
           >
             <img
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"
-              alt="Nino Khikhidze"
+              src={settings?.about_image && settings.about_image.trim() !== "" ? settings.about_image : aboutImg}
+              alt="Nino Khikhadze"
               className="w-full h-full object-cover grain-img"
               width={1280}
               height={1600}
@@ -63,7 +63,7 @@ function AboutPage() {
 
             <p className="text-lg text-muted-foreground leading-relaxed">
               {settings?.about_text ??
-                "ნინო ხიხიძე — დამოუკიდებელი ფოტოგრაფი თბილისიდან. 2024 წლიდან ვქმნი ვიზუალურ ისტორიებს, რომლებიც წამიერ ემოციას მარადიულ კადრად აქცევს."}
+                "ნინო ხიხაძე — დამოუკიდებელი ფოტოგრაფი თბილისიდან. 2024 წლიდან ვქმნი ვიზუალურ ისტორიებს, რომლებიც წამიერ ემოციას მარადიულ კადრად აქცევს."}
             </p>
 
             <div className="grid grid-cols-3 gap-6 border-t border-border pt-10">
